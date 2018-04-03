@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang ="fr">
+	<head>
+		<meta charset="utf-8">
+		<style>  canvas {position : absolute ; width : 100% ; height : auto;}
+		#d {position: absolute; width : 100% ; height : auto;}
+     div{position: absolute; margin: auto;}
+ #myDiv {position:relative;
+    overflow:hidden;
+    margin:10px auto; /*pour centrer*/
+    width:500px; /*par exemple*/
+    height:500px; /*par exemple*/
+    border: 15px solid orange}
+
+	</style> 
+		<script src="ajax-utils.js"> </script>
+    <script type="text/javascript" src="scriptD3.js"></script>
+		<script src="scriptSigma.js"></script>
+    <script src="sigma.js"></script>
+    <script src="sigma-force-atlas.js"></script>
+    <script src="../plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+
+
+</head>
+<body>
+<div id="container">
+  <style>
+    #graph-container {
+      background: #010E2E;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    } 
+  </style> 
+</div> 
+  <div id="graph-container"></div>
+  <div id="d">
+    <input type="button" value="Ecrire" id="newPost"> 
+    <textarea rows="30" cols="50" id="myPost" style="display:none" value=""></textarea> 
+    <input type="button" value="Envoyer"  style="display:none" id="sent">
+  </div>
+  <div id="myDiv" style="display:none"> </div>
+<script>
+	var g = {
+        nodes: [],
+        edges: []
+    };
+
+
+    // Visuel des noeuds
+    sigma.canvas.nodes.goo = function(node, ctx, settings) {
+    var prefix = settings('prefix') || '';
+    ctx.fillStyle =  settings('defaultNodeColor');
+    // effet lumineux sur les noeuds
+    ctx.shadowBlur = 60;
+    ctx.shadowColor = "white";
+
+    ctx.beginPath();
+    ctx.arc(
+      node[prefix + 'x'],
+      node[prefix + 'y'],
+      node[prefix + 'size'],
+      0,
+      Math.PI * 2,
+      true
+    );
+    ctx.closePath();
+    ctx.fill();
+  };
+
+
+
+/* Création de l'objet graphe sigma */
+
+ s = new sigma({
+   graph: g,
+   container: 'graph-container',
+   renderer: {
+    container: document.getElementById('graph-container'),
+    type: 'canvas'
+   },
+   settings: {
+   	  minNodeSize: 5,
+      maxNodeSize: 12,
+      // autoRescale: false,
+       mouseEnabled: true, // permet à la souris (mouseWheel) de zoomer dans le canvas
+       mouseWheelEnabled: true,
+      // doubleClickEnabled: false,
+      // touchEnabled: false,
+      nodesPowRatio: 1,
+      edgesPowRatio: 1,
+      // defaultEdgeColor: 'white', //'#333',
+      defaultNodeColor: '#A0A0A0',//'#333',
+      edgeColor: 'default'
+    }
+   });
+
+sigma.parsers.json('data_sigma.json', s ,  function() {
+    s.refresh();
+    console.log(s.graph.nodes());
+    // s.graph.nodes().forEach(function(s) {
+    // console.log("s=", s);});
+    s.startForceAtlas2();
+
+/*
+* Attention, le graphe est parsé de manière asynchrone, donc toute fonction
+*  devant précéder la création du graphe (forceAtlas2, ajout de nouveaux noeuds)
+*  doit se faire dans ce bloc 
+*
+*/
+
+document.querySelector("#newPost").addEventListener("click", 
+      function(event){
+        var layout=document.getElementById('d');
+        this.style.display='none';
+        var post=document.getElementById("myPost");
+        post.style.display="block";
+        document.getElementById("sent").style.display="block";
+        
+        document.querySelector("#sent").addEventListener("click",
+          function(event){
+            this.style.display="none";
+            console.log("here!", post.value);
+            post.style.display="none";
+            document.getElementById("newPost").style.display='block';
+            // il reste à assurer id noeud + label unique + coordonnees
+            s.graph.addNode({
+              id: 'n10',
+              label: post.value,
+              x: 1,
+              y: 1,
+              // color: 'blue',
+              type: 'goo',
+              size: 1
+            });
+  post.value="";
+  console.log(s.graph.nodes());
+  s.refresh();
+  s.startForceAtlas2();
+
+          });
+      });
+  });
+
+</script>
+</body>
+</html>
+
+
