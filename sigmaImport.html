@@ -13,12 +13,12 @@
     border: 15px solid orange}
 
 	</style> 
-		<script src="ajax-utils.js"> </script>
-    <script type="text/javascript" src="scriptD3.js"></script>
-		<script src="scriptSigma.js"></script>
-    <script src="sigma.js"></script>
-    <script src="sigma-force-atlas.js"></script>
-    <script src="../plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
+		<script src="js/ajax-utils.js"> </script>
+    <script type="text/javascript" src="js/scriptD3.js"></script>
+		<script src="js/scriptSigma.js"></script>
+    <script src="js/sigma.js"></script>
+    <script src="js/sigma-force-atlas.js"></script>
+    <script src="js/sigma.parsers.json.js"></script>
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 
 
@@ -119,14 +119,19 @@ document.querySelector("#newPost").addEventListener("click",
         var post=document.getElementById("myPost");
         post.style.display="block";
         document.getElementById("sent").style.display="block";
-        
+  /*
+  *   Ajout d'un noeud au clic sur le bouton Envoyer
+  *  Il reste à assurer que les ids des noeuds soient uniques, 
+  *  et faire le regroupement de clusters par mot clé
+  */
+  
         document.querySelector("#sent").addEventListener("click",
           function(event){
             this.style.display="none";
             console.log("here!", post.value);
             post.style.display="none";
             document.getElementById("newPost").style.display='block';
-            // il reste à assurer id noeud + label unique + coordonnees
+      
             s.graph.addNode({
               id: 'n10',
               label: post.value,
