@@ -98,7 +98,7 @@
     }
    });
 
-sigma.parsers.json('data_sigma.json', s ,  function() {
+sigma.parsers.json('data/data_sigma.json', s ,  function() {
     s.refresh();
     console.log(s.graph.nodes());
     // s.graph.nodes().forEach(function(s) {
@@ -124,7 +124,7 @@ document.querySelector("#newPost").addEventListener("click",
   *  Il reste à assurer que les ids des noeuds soient uniques, 
   *  et faire le regroupement de clusters par mot clé
   */
-  
+
         document.querySelector("#sent").addEventListener("click",
           function(event){
             this.style.display="none";
